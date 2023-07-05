@@ -2,6 +2,7 @@ package account
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,14 +13,26 @@ func CreateAccount(name, cpf, secret string, balance int) (uuid.UUID, error) {
 	// Gerar um ID único para a nova conta
 	id, err := uuid.NewRandom()
 	if err != nil {
-		return Account{}, err
+		return uuid.UUID{}, err
+	}
+
+	//Verificar se existe saldo para criar a conta
+	err = CheckBalance(balance)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	//Verificar se o CPF esta correto
+	cpf, err = ValidaCPF(cpf)
+	if err != nil {
+		return uuid.UUID{}, err
 	}
 
 	// Obter a data e hora atual
 	createdAt := time.Now()
 	// Criar uma nova instância da estrutura Account com os dados fornecidos
-	account := Account{
-		ID:        id,
+	account := entities.Account{
+		Id:        id,
 		Name:      name,
 		Cpf:       cpf,
 		Secret:    secret,
@@ -27,12 +40,8 @@ func CreateAccount(name, cpf, secret string, balance int) (uuid.UUID, error) {
 		CreatedAt: createdAt,
 	}
 
-	// Realizar ações adicionais, como validação de dados ou interação com a camada de repositório, se necessário
-
-	CheckBalance(account.Balance)
-
-	// Retornar a nova conta criada
-	return account, nil
+	// Retornar o id da  nova conta criada
+	return account.Id, nil
 }
 
 func CheckBalance(amount int) error {
@@ -42,6 +51,25 @@ func CheckBalance(amount int) error {
 	return nil
 }
 
-func GetAll() ([]entities.Account, error) {
+func ValidaCPF(cpf string) (string, error) {
+	if len(cpf) == 11 || len(cpf) == 14 {
+		if len(cpf) == 11 {
+			return cpf, nil
+		} else {
 
+			if string([]rune(cpf)[3]) == "." && string([]rune(cpf)[7]) == "." && string([]rune(cpf)[11]) == "-" {
+				cpf = strings.Replace(cpf, ".", "", 2)
+				cpf = strings.Replace(cpf, "-", "", 1)
+				return cpf, nil
+			}
+
+		}
+	} else {
+		return cpf, errors.New("CPF format is incorrect")
+	}
+	return cpf, nil
+}
+
+func GetAll() ([]entities.Account, error) {
+	return []entities.Account{}, nil
 }

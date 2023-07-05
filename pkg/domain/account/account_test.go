@@ -1,5 +1,11 @@
 package account
 
+import (
+	"testing"
+
+	"github.com/google/uuid"
+)
+
 type CreateAccountTestInput struct {
 	ID        uuid.UUID
 	Name      string
