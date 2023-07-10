@@ -15,7 +15,7 @@ type LoginUseCase interface {
 	CheckLogin(cpf string, secret string) (uuid.UUID, error)
 }
 
-type TranferUserCase interface {
-	GetAllTranfer(idAccountOrigin uuid.UUID) ([]entities.Tranfer, error)
+type TransferUserCase interface {
+	GetAllTransfer(idAccountOrigin uuid.UUID) ([]entities.Transfer, error)
 	CreateTransfer(IdAccountOrigin uuid.UUID, IdAccountDestination uuid.UUID, amount int) error
 }
