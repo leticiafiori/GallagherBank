@@ -44,8 +44,8 @@ func CreateAccount(name, cpf, secret string, balance int) (uuid.UUID, error) {
 	return account.Id, nil
 }
 
-func CheckBalance(amount int) error {
-	if amount <= 0 {
+func CheckBalance(balance int) error {
+	if balance <= 0 {
 		return errors.New("Balance cannot be last than zero")
 	}
 	return nil
@@ -72,4 +72,8 @@ func ValidaCPF(cpf string) (string, error) {
 
 func GetAll() ([]entities.Account, error) {
 	return []entities.Account{}, nil
+}
+
+func GetBalance(cpf string) (int, error) {
+	return 0, nil
 }
