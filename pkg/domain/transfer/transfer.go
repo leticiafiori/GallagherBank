@@ -11,7 +11,7 @@ import (
 func CreateTransfer(idOrigin, idDestination uuid.UUID, amount int) error {
 
 	//busca a conta de origin
-	_, err := GetAccount(idOrigin)
+	accountOrigin, err := GetAccount(idOrigin)
 	if err != nil {
 		return err
 	}
@@ -23,6 +23,10 @@ func CreateTransfer(idOrigin, idDestination uuid.UUID, amount int) error {
 	}
 
 	//busca a conta de destino
+	accountDestination, err := GetAccount(idDestination)
+	if err != nil {
+		return err
+	}
 
 	//verifica se o amount(valor de transferencia) é maior que zero
 	err = CheckAmount(amount)
@@ -39,8 +43,15 @@ func CreateTransfer(idOrigin, idDestination uuid.UUID, amount int) error {
 	//verificar se o balance da conta de origem é maior que o ammount
 
 	//atualiza o saldo as duas contas
+	UpdateBalance(accountOrigin, accountDestination, amount)
 
 	return nil
+
+}
+
+func UpdateBalance(accountOrigin, accouuntDestination entities.Account, amount int) {
+	accountOrigin.Balance = accountOrigin.Balance - amount
+	accouuntDestination.Balance = accouuntDestination.Balance + amount
 
 }
 
